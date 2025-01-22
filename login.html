@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-color: #FFC0CB; /* Baby pink background */
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Creative font */
+            color: black; /* Black font color */
+            text-align: center;
+            margin-top: 100px;
+        }
+        .login-container {
+            display: inline-block;
+            text-align: left;
+            padding: 20px;
+            border: 2px solid black;
+            border-radius: 10px;
+            background-color: #fff0f5; /* Slightly lighter pink for contrast */
+        }
+        input {
+            display: block;
+            margin: 10px 0;
+            padding: 5px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid black;
+        }
+        button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Happy Birthday Dumbass!</h1>
+    <div class="login-container">
+        <form onsubmit="return validateLogin()">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter Username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        function validateLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Check credentials
+            if (username === "Shaw" && password === "BIRTHDAY") {
+                window.location.href = "birthday.html"; // Redirect to the next page
+                return false; // Prevent form submission
+            } else {
+                alert("Invalid Username or Password!");
+                return false; // Prevent form submission
+            }
+        }
+    </script>
+</body>
+</html>

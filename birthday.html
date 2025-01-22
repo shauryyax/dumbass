@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        body {
+            background-color: #FFC0CB; /* Baby pink background */
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Creative font */
+            color: black; /* Black font color */
+            text-align: center;
+            margin-top: 100px;
+        }
+        button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #333;
+        }
+        #resetButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        img {
+            display: block;
+            margin: 20px auto; /* Center the image */
+            max-width: 80%;
+            border: 2px solid black;
+            border-radius: 10px;
+        }
+        #countdown {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        #birthdayMessage {
+            color: red;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Your Birthday Surprise!</h1>
+    <button id="resetButton">Reset</button>
+    <div id="countdown"></div>
+    <div id="birthdayMessage" style="display:none;">HAPPY BIRTHDAY MY DUMBASS!</div>
+    <p>Click the button below to unlock your surprise for the day!</p>
+    <button id="unlockButton">Unlock Day 1</button>
+    <img id="dailyImage" style="display:none;" alt="Daily Surprise">
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        const totalDays = 30; // Total number of days
+        const currentDayKey = "birthdayCurrentDay"; // Key for tracking the current day in localStorage
+        const imagePath = "images/day"; // Base path for images (e.g., "images/day1.jpg")
+        const imageExtension = ".jpg"; // Extension for images
+
+        // Retrieve or initialize the current day
+        let currentDay = parseInt(localStorage.getItem(currentDayKey)) || 1;
+
+        // Update button text and countdown
+        const unlockButton = document.getElementById("unlockButton");
+        const countdown = document.getElementById("countdown");
+        const dailyImage = document.getElementById("dailyImage");
+        const birthdayMessage = document.getElementById("birthdayMessage");
+        const resetButton = document.getElementById("resetButton");
+
+        unlockButton.textContent = `Unlock Day ${currentDay}`;
+        countdown.textContent = `${totalDays - currentDay + 1} days to go...`;
+
+        let imageDisplayed = false; // Flag to track if the image is displayed
+
+        // Handle Unlock button click
+        unlockButton.addEventListener("click", () => {
+            if (!imageDisplayed) {
+                // Show the image for the current day
+                const imageUrl = `${imagePath}${currentDay}${imageExtension}`;
+                dailyImage.src = imageUrl;
+                dailyImage.style.display = "block";
+                imageDisplayed = true;
+
+                // Update button text to prompt login
+                unlockButton.textContent = "Go Back to Login";
+            } else {
+                // Save progress to localStorage
+                const nextDay = currentDay + 1;
+                if (currentDay <= totalDays) {
+                    localStorage.setItem(currentDayKey, Math.min(nextDay, totalDays));
+                }
+
+                // Redirect to the login page
+                window.location.href = "login.html";
+            }
+        });
+
+        // Handle Reset button click
+        resetButton.addEventListener("click", () => {
+            // Clear progress in localStorage and reload the page
+            localStorage.removeItem(currentDayKey);
+            window.location.reload(); // Reload the page to reset everything
+        });
+
+        // Preload the image for the current day
+        window.onload = () => {
+            const preloadUrl = `${imagePath}${currentDay}${imageExtension}`;
+            fetch(preloadUrl).then(response => {
+                if (response.ok) {
+                    dailyImage.src = preloadUrl;
+                    dailyImage.style.display = "block";
+                }
+            });
+        };
+
+        // Confetti function for final day
+        function launchConfetti() {
+            const duration = 5 * 1000; // Confetti duration in milliseconds
+            const end = Date.now() + duration;
+
+            const frame = () => {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            };
+
+            frame();
+        }
+
+        // Show special message on the last day
+        if (currentDay === totalDays) {
+            countdown.style.display = "none"; // Hide countdown
+            birthdayMessage.style.display = "block"; // Show birthday message
+            launchConfetti(); // Trigger confetti
+        }
+    </script>
+</body>
+</html>
