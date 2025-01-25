@@ -3,192 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday</title>
+    <title>Login</title>
     <style>
         body {
-            background-color: #FFC0CB;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            color: black;
+            font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 100px;
         }
+        form {
+            display: inline-block;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+        }
         button {
+            padding: 10px 15px;
             background-color: black;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            margin: 10px;
+            font-size: 14px;
         }
         button:hover {
             background-color: #333;
         }
-        img, video {
-            display: none;
-            margin: 20px auto;
-            max-width: 80%;
-            border: 2px solid black;
-            border-radius: 10px;
-        }
-        a {
-            display: none;
-            font-size: 18px;
-            color: blue;
-            text-decoration: underline;
-            margin-top: 20px;
-        }
-        #resetButton {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: red;
-            color: white;
-            font-size: 12px;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #skipButton {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: green;
-            color: white;
-            font-size: 12px;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #countdown {
-            margin-bottom: 20px;
-            font-size: 18px;
-        }
-        #birthdayMessage {
-            color: red;
-            font-size: 24px;
-            margin-top: 20px;
-        }
     </style>
-    <!-- Include the Canvas Confetti library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-    <h1>Welcome to Your Birthday Surprise!</h1>
-    <button id="resetButton">Reset</button>
-    <button id="skipButton">Skip to Day 30</button>
-    <div id="countdown"></div>
-    <div id="birthdayMessage" style="display:none;">HAPPY BIRTHDAY!</div>
-    <p>Click the button below to unlock your surprise for the day!</p>
-    <button id="unlockButton">Unlock Day 1</button>
-    <img id="dailyImage" alt="Daily Surprise">
-    <video id="dailyVideo" controls></video>
-    <a id="dailyLink" target="_blank"></a>
+    <h1>Login to Access Your Birthday Surprise</h1>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <p id="errorMessage" style="color: red; display: none;">Invalid username or password. Please try again.</p>
 
     <script>
-        const totalDays = 30;
-        const currentDayKey = "birthdayCurrentDay";
-        const basePath = "day"; // Base path for daily files
-        let currentDay = parseInt(localStorage.getItem(currentDayKey)) || 1;
+        // Valid credentials
+        const validCredentials = [
+            { username: "shaw", password: "1" },
+            { username: "dumbass", password: "bigpp" }
+        ];
 
-        const unlockButton = document.getElementById("unlockButton");
-        const resetButton = document.getElementById("resetButton");
-        const skipButton = document.getElementById("skipButton");
-        const dailyImage = document.getElementById("dailyImage");
-        const dailyVideo = document.getElementById("dailyVideo");
-        const dailyLink = document.getElementById("dailyLink");
-        const countdown = document.getElementById("countdown");
-        const birthdayMessage = document.getElementById("birthdayMessage");
+        // Handle login form submission
+        const loginForm = document.getElementById("loginForm");
+        const errorMessage = document.getElementById("errorMessage");
 
-        unlockButton.textContent = `Unlock Day ${currentDay}`;
-        countdown.textContent = `${totalDays - currentDay + 1} days to go...`;
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
 
-        let contentDisplayed = false;
+            const enteredUsername = document.getElementById("username").value;
+            const enteredPassword = document.getElementById("password").value;
 
-        unlockButton.addEventListener("click", () => {
-            if (!contentDisplayed) {
-                if (currentDay === 30) {
-                    // Display birthday message and launch confetti
-                    birthdayMessage.style.display = "block";
-                    launchConfetti();
-                } else {
-                    // Default behavior for other days
-                    const imageFile = `${basePath}${currentDay}.jpg`;
-                    const videoFile = `${basePath}${currentDay}.mp4`;
+            // Check if credentials are valid
+            const isValid = validCredentials.some(
+                (cred) =>
+                    cred.username === enteredUsername &&
+                    cred.password === enteredPassword
+            );
 
-                    fetch(imageFile, { method: "HEAD" })
-                        .then((response) => {
-                            if (response.ok) {
-                                dailyImage.src = imageFile;
-                                dailyImage.style.display = "block";
-                                dailyVideo.style.display = "none";
-                                dailyLink.style.display = "none";
-                            } else {
-                                fetch(videoFile, { method: "HEAD" }).then((response) => {
-                                    if (response.ok) {
-                                        dailyVideo.src = videoFile;
-                                        dailyVideo.style.display = "block";
-                                        dailyImage.style.display = "none";
-                                        dailyLink.style.display = "none";
-                                    } else {
-                                        alert("No content found for this day.");
-                                    }
-                                });
-                            }
-                        })
-                        .catch(() => alert("Error loading content."));
-                }
-                contentDisplayed = true;
-                unlockButton.textContent = "Go Back to Login";
+            if (isValid) {
+                // Redirect to the birthday page
+                window.location.href = "birthday.html";
             } else {
-                const nextDay = currentDay + 1;
-                if (currentDay <= totalDays) {
-                    localStorage.setItem(currentDayKey, Math.min(nextDay, totalDays));
-                }
-                window.location.href = "index.html";
+                // Show error message
+                errorMessage.style.display = "block";
             }
         });
-
-        resetButton.addEventListener("click", () => {
-            localStorage.removeItem(currentDayKey);
-            window.location.reload();
-        });
-
-        skipButton.addEventListener("click", () => {
-            currentDay = totalDays;
-            localStorage.setItem(currentDayKey, totalDays);
-            countdown.style.display = "none";
-            birthdayMessage.style.display = "block";
-            launchConfetti();
-        });
-
-        // Enhanced Confetti Function: Blasts from both sides, 5 times
-        function launchConfetti() {
-            let count = 0;
-            const interval = setInterval(() => {
-                // Left-side confetti
-                confetti({
-                    particleCount: 50,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 }, // From the left
-                });
-
-                // Right-side confetti
-                confetti({
-                    particleCount: 50,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 }, // From the right
-                });
-
-                count++;
-                if (count === 5) {
-                    clearInterval(interval); // Stop after 5 blasts
-                }
-            }, 500); // Blasts every 500ms
-        }
     </script>
 </body>
 </html>
+
