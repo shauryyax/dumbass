@@ -79,7 +79,7 @@
     <script>
         const totalDays = 30; // Total number of days
         const currentDayKey = "birthdayCurrentDay"; // Key for tracking the current day in localStorage
-        const basePath = "day"; // Base path for files inside the images folder
+        const basePath = "day"; // Base path for files in the same directory
 
         let currentDay = parseInt(localStorage.getItem(currentDayKey)) || 1;
 
@@ -130,7 +130,7 @@
                 if (currentDay <= totalDays) {
                     localStorage.setItem(currentDayKey, Math.min(nextDay, totalDays));
                 }
-                window.location.href = "login.html";
+                window.location.href = "index.html"; // Redirects to index.html (renamed login.html)
             }
         });
 
@@ -200,3 +200,4 @@
     </script>
 </body>
 </html>
+
