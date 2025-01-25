@@ -3,70 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Login</title>
     <style>
         body {
-            background-color: #FFC0CB; /* Baby pink background */
-            font-family: 'Comic Sans MS', cursive, sans-serif; /* Creative font */
-            color: black; /* Black font color */
+            font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 100px;
         }
-        .login-container {
+        form {
             display: inline-block;
             text-align: left;
-            padding: 20px;
-            border: 2px solid black;
-            border-radius: 10px;
-            background-color: #fff0f5; /* Slightly lighter pink for contrast */
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
         }
         input {
-            display: block;
-            margin: 10px 0;
-            padding: 5px;
+            margin-bottom: 10px;
+            padding: 8px;
             width: 100%;
-            border-radius: 5px;
-            border: 1px solid black;
         }
         button {
+            padding: 10px 15px;
             background-color: black;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
             cursor: pointer;
+            font-size: 14px;
         }
         button:hover {
             background-color: #333;
         }
+        #errorMessage {
+            color: red;
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <h1>Happy Birthday Dumbass!</h1>
-    <div class="login-container">
-        <form onsubmit="return validateLogin()">
-            <label for="username">Username:</label>
-            <input type="text" id="username" placeholder="Enter Username" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" placeholder="Enter Password" required>
-            <button type="submit">Login</button>
-        </form>
-    </div>
+    <h1>Login to Access Your Birthday Surprise</h1>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <p id="errorMessage">Invalid username or password. Please try again.</p>
 
     <script>
-        function validateLogin() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        // Valid credentials
+        const validCredentials = [
+            { username: "shaw", password: "BIRTHDAY" },
+            { username: "dumbass", password: "bigpp" }
+        ];
 
-            // Check credentials
-            if (username === "Shaw" && password === "BIRTHDAY") {
-                window.location.href = "birthday.html"; // Redirect to the next page
-                return false; // Prevent form submission
+        // Handle login form submission
+        const loginForm = document.getElementById("loginForm");
+        const errorMessage = document.getElementById("errorMessage");
+
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const enteredUsername = document.getElementById("username").value;
+            const enteredPassword = document.getElementById("password").value;
+
+            // Check if the entered credentials are valid
+            const isValid = validCredentials.some(
+                (cred) =>
+                    cred.username === enteredUsername &&
+                    cred.password === enteredPassword
+            );
+
+            if (isValid) {
+                // Redirect to the birthday page
+                window.location.href = "birthday.html";
             } else {
-                alert("Invalid Username or Password!");
-                return false; // Prevent form submission
+                // Show error message
+                errorMessage.style.display = "block";
             }
-        }
+        });
     </script>
 </body>
 </html>
+
