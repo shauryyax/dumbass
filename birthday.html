@@ -6,9 +6,9 @@
     <title>Happy Birthday</title>
     <style>
         body {
-            background-color: #FFC0CB; /* Baby pink background */
-            font-family: 'Comic Sans MS', cursive, sans-serif; /* Creative font */
-            color: black; /* Black font color */
+            background-color: #FFC0CB;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: black;
             text-align: center;
             margin-top: 100px;
         }
@@ -32,6 +32,13 @@
             border: 2px solid black;
             border-radius: 10px;
         }
+        a {
+            display: none;
+            font-size: 18px;
+            color: blue;
+            text-decoration: underline;
+            margin-top: 20px;
+        }
         #resetButton {
             position: absolute;
             top: 10px;
@@ -52,152 +59,4 @@
             font-size: 12px;
             padding: 5px 10px;
             border-radius: 5px;
-            cursor: pointer;
-        }
-        #countdown {
-            margin-bottom: 20px;
-            font-size: 18px;
-        }
-        #birthdayMessage {
-            color: red;
-            font-size: 24px;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Welcome to Your Birthday Surprise!</h1>
-    <button id="resetButton">Reset</button>
-    <button id="skipButton">Skip to Day 30</button>
-    <div id="countdown"></div>
-    <div id="birthdayMessage" style="display:none;">HAPPY BIRTHDAY MY DUMBASS!</div>
-    <p>Click the button below to unlock your surprise for the day!</p>
-    <button id="unlockButton">Unlock Day 1</button>
-    <img id="dailyImage" alt="Daily Surprise">
-    <video id="dailyVideo" controls></video>
-
-    <script>
-        const totalDays = 30; // Total number of days
-        const currentDayKey = "birthdayCurrentDay"; // Key for tracking the current day in localStorage
-        const basePath = "day"; // Base path for files in the same directory
-
-        let currentDay = parseInt(localStorage.getItem(currentDayKey)) || 1;
-
-        const unlockButton = document.getElementById("unlockButton");
-        const resetButton = document.getElementById("resetButton");
-        const skipButton = document.getElementById("skipButton");
-        const dailyImage = document.getElementById("dailyImage");
-        const dailyVideo = document.getElementById("dailyVideo");
-        const countdown = document.getElementById("countdown");
-        const birthdayMessage = document.getElementById("birthdayMessage");
-
-        unlockButton.textContent = `Unlock Day ${currentDay}`;
-        countdown.textContent = `${totalDays - currentDay + 1} days to go...`;
-
-        let contentDisplayed = false; // Track if the content is displayed
-
-        unlockButton.addEventListener("click", () => {
-            const imageFile = `${basePath}${currentDay}.jpg`;
-            const videoFile = `${basePath}${currentDay}.mp4`;
-
-            if (!contentDisplayed) {
-                // Try loading image
-                fetch(imageFile, { method: "HEAD" })
-                    .then((response) => {
-                        if (response.ok) {
-                            dailyImage.src = imageFile;
-                            dailyImage.style.display = "block";
-                            dailyVideo.style.display = "none";
-                        } else {
-                            // If image not found, try loading video
-                            fetch(videoFile, { method: "HEAD" }).then((response) => {
-                                if (response.ok) {
-                                    dailyVideo.src = videoFile;
-                                    dailyVideo.style.display = "block";
-                                    dailyImage.style.display = "none";
-                                } else {
-                                    alert("No content found for this day.");
-                                }
-                            });
-                        }
-                    })
-                    .catch(() => alert("Error loading content."));
-                contentDisplayed = true;
-                unlockButton.textContent = "Go Back to Login";
-            } else {
-                // Save progress and redirect
-                const nextDay = currentDay + 1;
-                if (currentDay <= totalDays) {
-                    localStorage.setItem(currentDayKey, Math.min(nextDay, totalDays));
-                }
-                window.location.href = "index.html"; // Redirects to index.html (renamed login.html)
-            }
-        });
-
-        resetButton.addEventListener("click", () => {
-            localStorage.removeItem(currentDayKey);
-            window.location.reload();
-        });
-
-        skipButton.addEventListener("click", () => {
-            currentDay = totalDays;
-            localStorage.setItem(currentDayKey, totalDays);
-
-            // Load content for Day 30 immediately
-            const imageFile = `${basePath}30.jpg`;
-            const videoFile = `${basePath}30.mp4`;
-
-            fetch(imageFile, { method: "HEAD" })
-                .then((response) => {
-                    if (response.ok) {
-                        dailyImage.src = imageFile;
-                        dailyImage.style.display = "block";
-                        dailyVideo.style.display = "none";
-                        countdown.style.display = "none";
-                        birthdayMessage.style.display = "block";
-                        launchConfetti();
-                    } else {
-                        fetch(videoFile, { method: "HEAD" }).then((response) => {
-                            if (response.ok) {
-                                dailyVideo.src = videoFile;
-                                dailyVideo.style.display = "block";
-                                dailyImage.style.display = "none";
-                                countdown.style.display = "none";
-                                birthdayMessage.style.display = "block";
-                                launchConfetti();
-                            } else {
-                                alert("No content found for Day 30!");
-                            }
-                        });
-                    }
-                })
-                .catch(() => alert("Error loading Day 30 content."));
-        });
-
-        function launchConfetti() {
-            const duration = 5 * 1000; // Confetti duration
-            const end = Date.now() + duration;
-
-            const frame = () => {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
-            };
-
-            frame();
-        }
-
-        window.onload = () => {
-            if (currentDay === totalDays) {
-                countdown.style.display = "none";
-                birthdayMessage.style.display = "block";
-                launchConfetti();
-            }
-        };
-    </script>
-</body>
-</html>
-
+           
