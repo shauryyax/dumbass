@@ -71,8 +71,6 @@
             margin-top: 20px;
         }
     </style>
-    <!-- Include the Canvas Confetti library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <h1>Welcome to Your Birthday Surprise!</h1>
@@ -108,37 +106,43 @@
 
         unlockButton.addEventListener("click", () => {
             if (!contentDisplayed) {
-                if (currentDay === 30) {
-                    // Display birthday message and launch confetti
-                    birthdayMessage.style.display = "block";
-                    launchConfetti();
-                } else {
-                    // Default behavior for other days
-                    const imageFile = `${basePath}${currentDay}.jpg`;
-                    const videoFile = `${basePath}${currentDay}.mp4`;
-
-                    fetch(imageFile, { method: "HEAD" })
-                        .then((response) => {
-                            if (response.ok) {
-                                dailyImage.src = imageFile;
-                                dailyImage.style.display = "block";
-                                dailyVideo.style.display = "none";
-                                dailyLink.style.display = "none";
-                            } else {
-                                fetch(videoFile, { method: "HEAD" }).then((response) => {
-                                    if (response.ok) {
-                                        dailyVideo.src = videoFile;
-                                        dailyVideo.style.display = "block";
-                                        dailyImage.style.display = "none";
-                                        dailyLink.style.display = "none";
-                                    } else {
-                                        alert("No content found for this day.");
-                                    }
-                                });
-                            }
-                        })
-                        .catch(() => alert("Error loading content."));
+                // Handle Day 3 explicitly
+                if (currentDay === 3) {
+                    dailyLink.href = "https://www.youtube.com/watch?v=obngREiNGic";
+                    dailyLink.textContent = "Watch your surprise video for Day 3!";
+                    dailyLink.style.display = "block";
+                    dailyImage.style.display = "none";
+                    dailyVideo.style.display = "none";
+                    contentDisplayed = true;
+                    unlockButton.textContent = "Go Back to Login";
+                    return; // Ensure no further checks are made
                 }
+
+                // Default behavior for other days
+                const imageFile = `${basePath}${currentDay}.jpg`;
+                const videoFile = `${basePath}${currentDay}.mp4`;
+
+                fetch(imageFile, { method: "HEAD" })
+                    .then((response) => {
+                        if (response.ok) {
+                            dailyImage.src = imageFile;
+                            dailyImage.style.display = "block";
+                            dailyVideo.style.display = "none";
+                            dailyLink.style.display = "none";
+                        } else {
+                            fetch(videoFile, { method: "HEAD" }).then((response) => {
+                                if (response.ok) {
+                                    dailyVideo.src = videoFile;
+                                    dailyVideo.style.display = "block";
+                                    dailyImage.style.display = "none";
+                                    dailyLink.style.display = "none";
+                                } else {
+                                    alert("No content found for this day.");
+                                }
+                            });
+                        }
+                    })
+                    .catch(() => alert("Error loading content."));
                 contentDisplayed = true;
                 unlockButton.textContent = "Go Back to Login";
             } else {
@@ -160,34 +164,7 @@
             localStorage.setItem(currentDayKey, totalDays);
             countdown.style.display = "none";
             birthdayMessage.style.display = "block";
-            launchConfetti();
         });
-
-        function launchConfetti() {
-            const duration = 5 * 1000; // Confetti duration (5 seconds)
-            const end = Date.now() + duration;
-
-            const frame = () => {
-                confetti({
-                    particleCount: 5,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                });
-                confetti({
-                    particleCount: 5,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
-            };
-
-            frame();
-        }
     </script>
 </body>
 </html>
